@@ -35,7 +35,7 @@ async function connectMySQL() {
         autoIncrement: true,
         allowNull: false,
       },
-      namePlayer: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },
@@ -63,7 +63,6 @@ async function connectMySQL() {
         allowNull: false,
   
       }, });
-  ;
   
   const Games = sequelize.define('Games', {
         idGames: {
