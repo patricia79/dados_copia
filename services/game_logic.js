@@ -1,18 +1,21 @@
 "use strict";
+const Game = require("../models/Game");
 
-function dice_game() {
+
+function dice_game(id) {
   let dice1 = Math.floor(6 * Math.random()) + 1;
   let dice2 = Math.floor(6 * Math.random()) + 1;
   let result = dice1 + dice2;
+  let score = false;
   if (result === 7) {
-    score == true
+    score = true
     console.log(`Congratulations!! You've won!! `);
   } else {
-    score == false
+    score = false
     console.log(`Sorry, you lost!! `);
   }
 
-  return { dice1, dice2, score, result };
+  return new Game(dice1, dice2, score, result, id);
 }
 
 let date_now = () =>{
@@ -24,4 +27,4 @@ let date_now = () =>{
 };
 
 
-export {dice_game, date_now}
+module.exports = {dice_game, date_now}

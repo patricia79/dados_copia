@@ -14,7 +14,12 @@ async function getPlayer(id) {
     return await Player.findOne({where: {idPlayer: id}});
 }
   
-module.exports = { addPlayer, getAllPlayers, getPlayer };
+
+async function addGame(game) {
+    return await Games.create({dice1: game.dice1, dice2: game.dice2, result: game.result, score: game.score, PlayerIdPlayer: game.idPlayer});
+
+}
+module.exports = { addPlayer, getAllPlayers, getPlayer, addGame};
 
 
    
