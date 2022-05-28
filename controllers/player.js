@@ -1,7 +1,7 @@
 'use strict'
 
 const Player = require("../models/Player");
-const PlayerDB = require("../data/mySQLCRUD");
+const PlayerDB = require("../data/crud");
 
 
 //POST /players: crea un jugador /addPlayer
