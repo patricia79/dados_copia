@@ -1,20 +1,23 @@
 'use strict'
 
-var express = require("express");
-var bodyParser = require("body-parser");
+const express = require("express");
+const bodyParser = require("body-parser");
+const connectMySQL = require('./data/connectMySQL');
 
-var app = express();
+const app = express()
+const api = require('./routes/player');
 
-//Carregar  rutes
-var user_routes = require("./routes/usuari");
+const configDB = require('./config/config')
 
 //Middlewares o tasques que s'han de realitzar abans de rebre la petició
 app.use(bodyParser.urlencoded({extended:false})); //Configurar  bodyparser
 app.use(bodyParser.json()); //Rebem el cos de la petició i el transformem en un json
 
-//configurar capçaleres
+app.use(api)
+connectMySQL.connectMySQL()
 
-//Rutes base
-app.use("/api", user_routes); //Definim una ruta base sobre la que treballar
+app.listen(configDB.port, () => {
+  console.log(`API REST en http://localhost:${configDB.port}/`);
+});
 
-module.exports = app;
+
