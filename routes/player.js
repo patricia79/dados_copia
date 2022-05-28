@@ -1,8 +1,8 @@
 const express = require("express");
 const api = express.Router();
 
-const { addPlayer} = require('../controllers/player');
+const { addNewPlayer} = require('../controllers/player');
 
-api.post('/players', addPlayer) 
+api.post('/players', addNewPlayer) 
 
 module.exports = api
