@@ -1,19 +1,20 @@
 'use strict'
 
-const Player = require("../models/player");
+const Player = require("../models/Player");
+const PlayerDB = require("../data/mySQLCRUD");
 
 
 //POST /players: crea un jugador /addPlayer
 
 
-const addPlayer = (req, res) => {
+const addNewPlayer = (req, res) => {
     try {
       if (!req.body.name) {
         res.status(400).json({ message: "Bad request" });
       } else {
         let player0 = new Player();
         player0.name = req.body.name;
-  
+  PlayerDB.addPlayer(player0);
         //envia resposta
         res
           .status(200)
@@ -46,5 +47,5 @@ const addPlayer = (req, res) => {
   */
   
   module.exports = {
-    addPlayer   }
+    addNewPlayer   }
   
