@@ -4,6 +4,7 @@ const config = {
   database: "dice_game",
   host: "localhost",
   dialect: "mysql",
+  
   port: process.env.PORT || 8888,
 }
 
