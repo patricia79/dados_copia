@@ -39,14 +39,14 @@ const getAllPlayers = async (req, res) => {
 
 const addPlayerGame = async (req, res) => {
   try {
+    // TODO: comprovar que el jugador existeix
     if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
     } else {
       let player = await PlayerDB.getPlayer(req.params.id);
-      if (player) {
+        if (player) {
         let game = dice_game.dice_game(req.params.id);
         await PlayerDB.addGame(game);
-
         //TODO: Realitzar la tirada
         res.status(200).json({
           message: `Game created successfully!! Congratulations!!!`,
@@ -62,8 +62,33 @@ const addPlayerGame = async (req, res) => {
 
 // TODO GET /players/{id}/games: retorna el llistat de jugades per un jugador.
 
+const getAllGames = async (req, res) => {
+  try {
+    // TODO: comprovar que hi ha jugador
+        if (!req.params.id) {
+      res.status(400).json({ message: "Bad request" });
+    } else {
+      let player = await PlayerDB.getPlayer(req.params.id);
+      // TODO: si hi ha jugador, comprovar que existeix
+      
+      if (player) {
+        let games = await PlayerDB.getAllGames(player);
+        res.status(200).json(games);
+      } else {
+        res.status(404).json({ message: "Player not found" });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+
+
+
 module.exports = {
   addNewPlayer,
   getAllPlayers,
   addPlayerGame,
+  getAllGames,
 };
