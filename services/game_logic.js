@@ -1,6 +1,6 @@
 "use strict";
 const Game = require("../models/Game");
-
+let { totalWins, totalGames } = require("../data/connectMySQL");
 
 function dice_game(id) {
   let dice1 = Math.floor(6 * Math.random()) + 1;
@@ -18,13 +18,14 @@ function dice_game(id) {
   return new Game(dice1, dice2, score, result, id);
 }
 
-let date_now = () =>{
-    let today = new Date();
-    let date = today.getFullYear()+'-'+(today.getMonth()+1)+'-'+today.getDate();
-    let time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    let date_time = date+' '+time;
-    return date_time;
-};
+function winRatio() {
+  let winRatio = (totalWins / totalGames)*100;
+  return winRatio;
+}
 
-
-module.exports = {dice_game, date_now}
+function lossRatio() {
+  let lossRatio = (totalGames-totalWins / totalGames)*100;
+  return lossRatio;
+}
+  
+module.exports = {dice_game, winRatio, lossRatio};
