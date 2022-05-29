@@ -1,6 +1,7 @@
 "use strict";
 const Game = require("../models/Game");
-let { totalWins, totalGames } = require("../data/connectMySQL");
+const Player = require("../models/Player");
+
 
 function dice_game(id) {
   let dice1 = Math.floor(6 * Math.random()) + 1;
@@ -19,13 +20,31 @@ function dice_game(id) {
 }
 
 function winRatio() {
+
   let winRatio = (totalWins / totalGames)*100;
-  return winRatio;
+
+   return new Player(idPlayer, name, registerDate, winRatio, totalGames, totalWins);
 }
 
 function lossRatio() {
+
   let lossRatio = (totalGames-totalWins / totalGames)*100;
-  return lossRatio;
+
+  return new Player(idPlayer, name, registerDate, winRatio, totalGames, totalWins);
 }
+/*
+function updateScore() {
+ 
   
+for (const vehiculo of arrayVehiculos) {
+  if (vehiculo.combustible == "g") {
+    console.log(vehiculo.nombre, vehiculo.marca, vehiculo.matricula);
+  }
+}
+
+  return new Player(idPlayer, name, registerDate, winRatio, totalGames, totalWins);
+  
+}
+*/
+ 
 module.exports = {dice_game, winRatio, lossRatio};

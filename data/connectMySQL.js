@@ -62,7 +62,11 @@ async function connectMySQL() {
         defaultValue: 0,
         allowNull: false,
   
-      }, });
+      },
+    
+      updatedAt: false,
+
+    });
   
   const Games = sequelize.define('Games', {
         idGames: {
@@ -87,6 +91,9 @@ async function connectMySQL() {
         type: Sequelize.BOOLEAN,
         allowNull: false},
   
+
+        updatedAt: false,
+
        })
 
        Player.hasMany(Games,{onDelete:'cascade'}) 

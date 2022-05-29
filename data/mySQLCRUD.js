@@ -24,7 +24,32 @@ async function getAllGames(game) {
     return await Games.findAll({where: {PlayerIdPlayer: game.idPlayer}});
 
 }
-module.exports = { addPlayer, getAllPlayers, getPlayer, addGame, getAllGames};
+
+async function ranking() {
+    return await Player.findAll({order: [['score', 'DESC']]});
+    
+} 
+/*
+async function modifyPlayer(id) {
+    return await Player.update({name: player.name, registerDate: player.register_date});
+}
+*/
+
+async function deletePlayerGames(game) {
+    return await Games.destroy({where: {PlayeridPlayer: game.idPlayer}});
+    
+
+}
+// loser
+//winner
+
+async function updateScore() {
+    return await Player.update({score: Player.score});
+}
+
+
+
+module.exports = { addPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, deletePlayerGames, updateScore};
 
 
    
