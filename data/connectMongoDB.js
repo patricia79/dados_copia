@@ -40,7 +40,7 @@ const mongoose = require("mongoose")
 const Schema = mongoose.Schema; //Ens permetra el crear un objecte tipus schema de la bd i que posteriorment al guardar dades s'enmagatzamaran dins d'una coleccio concreta i alhora en un document.
 
 let PlayerSchema = Schema({
-    namePlayer: String,
+    name: String,
     idPlayer: Number,
     registerDate: Date,
     
