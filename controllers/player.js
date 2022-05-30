@@ -4,14 +4,17 @@ const Player = require("../models/Player");
 const PlayerDB = require("../data/crud");
 let { dice_game, winRatio, lossRatio } = require("../services/game_logic");
 
+
 //POST /players: crea un jugador /addPlayer
 
 const addNewPlayer = async (req, res) => {
   try {
+    // si no hi ha nom o està buit, que el jugador que creï sigui ANONYMOUS
+
+    // (req.body.name === '') {req.body.name === "ANONYMOUS";}
     if (!req.body.name) {
       res.status(400).json({ message: "Bad request" });
-    } else if (req.body.name === '') {req.body.name === "ANONYMOUS";}
-        else {
+    } else {
       let player0 = new Player();
       player0.name = req.body.name;
       await PlayerDB.addPlayer(player0);
@@ -30,8 +33,7 @@ const addNewPlayer = async (req, res) => {
 const getAllPlayers = async (req, res) => {
   try {
     let players = await PlayerDB.getAllPlayers();
-   
-    res.status(200).json(players);
+    res.status(200).json({players});
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
@@ -48,7 +50,7 @@ const addPlayerGame = async (req, res) => {
     } else {
       let player = await PlayerDB.getPlayer(req.params.id);
         if (player) {
-        let game = dice_game.dice_game(req.params.id);
+        let game = dice_game(req.params.id);
         await PlayerDB.addGame(game);
 
         //TODO: Realitzar la tirada
@@ -237,6 +239,4 @@ module.exports = {
   getAllGames,
   deletePlayerGames,
   ranking
-
-
 }

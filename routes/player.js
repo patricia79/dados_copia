@@ -12,4 +12,6 @@ api.get('/players/ranking', ranking) // GET /players/ranking: retorna el percent
 api.delete('/players/:id/games', deletePlayerGames) // DELETE /players/{id}/games: elimina les tirades del jugador
 // api.get('/players/ranking/loser', loserPlayer) // GET /players/ranking/loser: retorna el jugador amb pitjor percentatge d’èxit
 // api.get('/players/ranking/winner', winnerPlayer ) // GET /players/ranking/winner: retorna el jugador amb millor percentatge d’èxit
+
+
 module.exports = api
