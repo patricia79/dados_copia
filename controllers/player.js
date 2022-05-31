@@ -19,9 +19,7 @@ const addNewPlayer = async (req, res) => {
       player0.name = req.body.name;
       await PlayerDB.addPlayer(player0);
       //envia resposta
-      res.status(200).json({
-        message: `${player0.name} created successfully!! Congratulations!!!`, // Jugador creat
-      });
+      res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
