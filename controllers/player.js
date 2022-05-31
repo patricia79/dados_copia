@@ -11,15 +11,20 @@ const addNewPlayer = async (req, res) => {
   try {
     // si no hi ha nom o està buit, que el jugador que creï sigui ANONYMOUS
 
-    // (req.body.name === '') {req.body.name === "ANONYMOUS";}
-    if (!req.body.name) {
-      res.status(400).json({ message: "Bad request" });
-    } else {
+    
+    if (req.body.name) {
       let player0 = new Player();
       player0.name = req.body.name;
-      await PlayerDB.addPlayer(player0);
+      await PlayerDB.addNewPlayer(player0);
       //envia resposta
       res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
+    } else {
+       req.body.name = "ANONYMOUS"
+      let player1 = new Player();
+      player1.name = req.body.name;
+      await PlayerDB.addNewPlayer(player1);
+      //envia resposta
+      res.status(200).json({message: `${player1.name} created successfully!! Congratulations!!!`,});
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
