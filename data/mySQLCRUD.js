@@ -1,6 +1,6 @@
 const { Player, Games }  = require ("./connectMySQL");
 
-async function  addPlayer (player) {
+async function  addNewPlayer (player) {
 
      return await Player.create({name: player.name, registerDate: player.register_date});
  }
@@ -49,7 +49,7 @@ async function updateScore() {
 
 
 
-module.exports = { addPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, deletePlayerGames, updateScore};
+module.exports = { addNewPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, deletePlayerGames, updateScore};
 
 
    
