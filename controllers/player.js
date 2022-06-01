@@ -5,24 +5,23 @@ const PlayerDB = require("../data/crud");
 let { dice_game, winRatio, lossRatio } = require("../services/game_logic");
 
 
-//POST /players: crea un jugador /addPlayer
+//POST /players: crea un jugador /addNewPlayer
 
 const addNewPlayer = async (req, res) => {
   try {
-    // si no hi ha nom o està buit, que el jugador que creï sigui ANONYMOUS
 
-    
+    // si te nom, que el guardi en la base de dades
     if (req.body.name) {
       let player0 = new Player();
       player0.name = req.body.name;
       await PlayerDB.addNewPlayer(player0);
       //envia resposta
       res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
-    } else {
+    } else { // si no te nom, que el jugador que creï sigui ANONYMOUS
        req.body.name = "ANONYMOUS"
       let player1 = new Player();
       player1.name = req.body.name;
-      await PlayerDB.addNewPlayer(player1);
+      await PlayerDB.addNewPlayer(player1);// 
       //envia resposta
       res.status(200).json({message: `${player1.name} created successfully!! Congratulations!!!`,});
     }
@@ -47,16 +46,17 @@ const getAllPlayers = async (req, res) => {
 
 const addPlayerGame = async (req, res) => {
   try {
-    // TODO: comprovar que el jugador existeix
+    
+    // comprovar que el jugador existeix
     if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
     } else {
       let player = await PlayerDB.getPlayer(req.params.id);
-        if (player) {
+        if (player) { // si hi ha jugador
         let game = dice_game(req.params.id);
         await PlayerDB.addGame(game);
 
-        //TODO: Realitzar la tirada
+        // Realitzar la tirada
         res.status(200).json({
           message: `Game created successfully!! Congratulations!!!`,
         });
@@ -73,15 +73,13 @@ const addPlayerGame = async (req, res) => {
 
 const getAllGames = async (req, res) => {
   try {
-    // TODO: comprovar que hi ha jugador
+    // TODO: si no hi ha jugador, retornar error
         if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
-    } else {
+    } else {  // si hi ha jugador, comprovar que existeix
       let player = await PlayerDB.getPlayer(req.params.id);
-
-      // TODO: si hi ha jugador, comprovar que existeix
-
-      if (player) {
+     
+      if (player) { // Retornar el llistat de tirades
         let games = await PlayerDB.getAllGames(player);
         res.status(200).json(games);
       } else {
@@ -94,7 +92,7 @@ const getAllGames = async (req, res) => {
 };
 
 
-// TODO GET /players/ranking: retorna el percentatge mig d’èxits del conjunt de tots els jugadors
+// TODO GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors
 
 const ranking = async (req, res) => {
   try {
@@ -113,12 +111,36 @@ const ranking = async (req, res) => {
   }
 };
 
-/*
+
 
 //TODO PUT /players: modifica el nom del jugador
 
-const modifyPlayer = async (req, res) => {
-  try {
+
+const modifyPlayer = async(req, res) =>{
+  const idPlayer = req.params.id
+  const { namePlayer } = req.body.name
+  try{
+        const player = await Player.findByPk({
+      where:{
+        idPlayer:idPlayer
+      } })
+      await Player.update({namePlayer},{where:{idPlayer: idPlayer}},)
+   
+    res.status(200).json({message: `${player.namePlayer} modified successfully!! Congratulations!!!`});
+  } catch (error){
+    res.status(404).json({message: 'player not found'})
+  }
+}
+
+
+/*
+    if (req.body.name) {
+      let player0 = new Player();
+      player0.name = req.body.name;
+      await PlayerDB.modifyPlayer(player0);
+
+
+
     if (!req.body.name) {
       res.status(400).json({ message: "Bad request" });
     } else {
@@ -138,6 +160,10 @@ const modifyPlayer = async (req, res) => {
 };
 */
 
+
+
+
+   
 
 //TODO DELETE /players/{id}/games: elimina les tirades del jugador
 
@@ -235,11 +261,45 @@ const winnerPlayer = async (req, res) => {
 
 */
 
+const generalRanking = async(req, res) => {
+  try {
+    const totalPlayers = await Player.count()
+    const sumWinRate = await Player.sum('winRate')
+    const generalWinRate = sumWinRate/totalPlayers
+    res.status(200).send({generalWinRate})
+  } catch(e){
+    res.status(500).send({message:e.message})
+  }
+}
+
+const getBetterPlayer = async(req, res) => {
+  const betterWinRate = await Player.max('winRate')
+  console.log(betterWinRate)
+  try {
+    const player = await Player.findAll({where:{winRate:betterWinRate}})
+    res.status(200).send({ player })
+  } catch (e) {
+    res.status(500).send({message:e.message})
+  }
+}
+
+const getWorstPlayer = async(req, res) => {
+  const worstWinRate = await Player.min('winRate')
+  console.log(worstWinRate)
+  try {
+    const player = await Player.findAll({where:{winRate:worstWinRate}})
+    res.status(200).send({ player })
+  } catch (e) {
+    res.status(500).send({message:e.message})
+  }
+}
+
 module.exports = {
   addNewPlayer,
   getAllPlayers,
   addPlayerGame,
   getAllGames,
   deletePlayerGames,
+  modifyPlayer,
   ranking
 }

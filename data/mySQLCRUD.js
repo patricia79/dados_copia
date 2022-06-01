@@ -31,6 +31,7 @@ async function ranking() {
 } 
 /*
 async function modifyPlayer(id) {
+
     return await Player.update({name: player.name, registerDate: player.register_date});
 }
 */
