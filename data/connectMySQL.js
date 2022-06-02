@@ -42,9 +42,7 @@ async function connectMySQL() {
       register_date: {
         type: Sequelize.DATE,
         allowNull: false,
-      },
-  
-      updatedAt: false,
+      }
 
     });
   
@@ -85,11 +83,7 @@ async function connectMySQL() {
         type: Sequelize.DECIMAL(10, 2),
         defaultValue: 0,
         allowNull: false,
-      },
-  
-  
-
-        updatedAt: false,
+      }
 
        })
 
