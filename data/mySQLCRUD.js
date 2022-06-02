@@ -2,7 +2,7 @@ const { Player, Games }  = require ("./connectMySQL");
 
 async function  addNewPlayer (player) {
 
-     return await Player.create({namePlayer: player.namePlayer, register_date: player.register_date});
+     return await Player.create({name: player.name, register_date: player.register_date});
  }
 
  async function  getAllPlayers () {
@@ -10,8 +10,8 @@ async function  addNewPlayer (player) {
     return await Player.findAll();
 }
 
-async function getPlayer(idPlayer) {
-    return await Player.findOne({where: {idPlayer: idPlayer}});
+async function getPlayer(id) {
+    return await Player.findOne({where: {id: id}});
 }
   
 

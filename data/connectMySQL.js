@@ -29,13 +29,13 @@ async function connectMySQL() {
 
 
     const Player = sequelize.define("Player", {
-      idPlayer: {
+      id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
         autoIncrement: true,
         allowNull: false,
       },
-      namePlayer: {
+      name: {
         type: Sequelize.STRING,
         allowNull: false,
       },

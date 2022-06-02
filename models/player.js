@@ -2,9 +2,9 @@
 
 class Player {
 
-    constructor(namePlayer){
+    constructor(name){
         this.idPlayer = null
-        this.namePlayer = namePlayer
+        this.name = name
         this.register_date = new Date
     }
        }
