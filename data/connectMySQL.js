@@ -35,35 +35,15 @@ async function connectMySQL() {
         autoIncrement: true,
         allowNull: false,
       },
-      name: {
+      namePlayer: {
         type: Sequelize.STRING,
         allowNull: false,
       },
-      registerDate: {
+      register_date: {
         type: Sequelize.DATE,
         allowNull: false,
       },
   
-      winRatio: {
-        type: Sequelize.DECIMAL(10, 2),
-        defaultValue: 0,
-        allowNull: false,
-      },
-  
-      totalGames: {  
-  
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false,
-  
-      },
-      totalWins: {
-        type: Sequelize.INTEGER,
-        defaultValue: 0,
-        allowNull: false,
-  
-      },
-    
       updatedAt: false,
 
     });
@@ -83,13 +63,30 @@ async function connectMySQL() {
             type: Sequelize.INTEGER,
             allowNull: false},
         
-      result: {
-        type: Sequelize.INTEGER,
-        allowNull: false},
-    
-      score: {
+       score: {
         type: Sequelize.BOOLEAN,
         allowNull: false},
+
+        totalGames: {  
+  
+          type: Sequelize.INTEGER,
+          defaultValue: 0,
+          allowNull: false,
+    
+        },
+        totalWins: {
+          type: Sequelize.INTEGER,
+          defaultValue: 0,
+          allowNull: false,
+    
+        },
+        
+      winRatio: {
+        type: Sequelize.DECIMAL(10, 2),
+        defaultValue: 0,
+        allowNull: false,
+      },
+  
   
 
         updatedAt: false,

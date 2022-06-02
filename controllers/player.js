@@ -13,17 +13,17 @@ const addNewPlayer = async (req, res) => {
     // si te nom, que el guardi en la base de dades
     if (req.body.name) {
       let player0 = new Player();
-      player0.name = req.body.name;
+      player0.namePlayer = req.body.name;
       await PlayerDB.addNewPlayer(player0);
       //envia resposta
-      res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
+      res.status(200).json({message: `${player0.namePlayer} created successfully!! Congratulations!!!`,});
     } else { // si no te nom, que el jugador que creï sigui ANONYMOUS
        req.body.name = "ANONYMOUS"
       let player1 = new Player();
-      player1.name = req.body.name;
+      player1.namePlayer = req.body.name;
       await PlayerDB.addNewPlayer(player1);// 
       //envia resposta
-      res.status(200).json({message: `${player1.name} created successfully!! Congratulations!!!`,});
+      res.status(200).json({message: `${player1.namePlayer} created successfully!! Congratulations!!!`,});
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
@@ -98,7 +98,7 @@ const deletePlayerGames = async (req, res) => {
 // si no hi ha id...
  if (!req.params.id) {
   res.status(400).json({ message: "Bad request" });
-  
+
 } else { // si hi ha id...
   let player = await PlayerDB.getPlayer(req.params.id);
    // si hi ha jugador
@@ -128,7 +128,7 @@ const ranking = async (req, res) => {
     } else {
     await Player.increment(['totalGames'],{where: {PlayeridPlayer: game.idPlayer}})  
     }
-  
+  console.log( `totalGames: ${totalGames},  totalWins: ${totalWins},totalWins, }`)
     let players = await PlayerDB.getAllPlayers();    
     winRatio(players); 
    
