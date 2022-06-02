@@ -154,22 +154,17 @@ const generalRanking = async(req, res) => {
 
 const modifyPlayer = async(req, res) =>{
   const idPlayer = req.params.id
-  const { namePlayer } = req.body.name
+  const namePlayer = req.body.name
   try{
-        const player = await Player.findByPk({
-      where:{
-        idPlayer:idPlayer
-      } })
-      await Player.update({namePlayer},{where:{idPlayer: idPlayer}},)
-   
-    res.status(200).json({message: `${player.namePlayer} modified successfully!! Congratulations!!!`});
-  } catch (error){
-    res.status(404).json({message: 'player not found'})
+        const player =new Player(namePlayer)
+        player.id = idPlayer
+        await PlayerDB.modifyPlayer(player)
+        res.status(200).json({message: `Player ${player.name} modified successfully!! Congratulations!!!`})
+  }
+  catch(error){
+    res.status(404).json({ message: "Player not found" });
   }
 }
-
-
-
 
 
 

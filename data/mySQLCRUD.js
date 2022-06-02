@@ -30,13 +30,13 @@ async function ranking() {
     return await Player.findAll({order: [['score', 'DESC']]});
     
 } 
-/*
-async function modifyPlayer(id) {
 
-    return await Player.update({name: player.name, registerDate: player.register_date}); 
+async function modifyPlayer(player) {
+
+    return await Player.update({name: player.name}, {where: {id: player.id}});
 
 }
-*/
+
 
 async function deletePlayerGames(game) {
     return await Games.destroy({where: {PlayeridPlayer: game.idPlayer}});
@@ -52,7 +52,7 @@ async function updateScore() {
 
 
 
-module.exports = { addNewPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, deletePlayerGames, updateScore};
+module.exports = { addNewPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, modifyPlayer, deletePlayerGames, updateScore};
 
 
    
