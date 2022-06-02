@@ -22,14 +22,14 @@ function winRatio() {
 
   let winRatio = (totalWins / totalGames)*100;
 
-   return new Player(idPlayer, namePlayer, register_date, winRatio, totalGames, totalWins);
+   return new Player(id, name, register_date, winRatio, totalGames, totalWins);
 }
 
 function lossRatio() {
 
   let lossRatio = (totalGames-totalWins / totalGames)*100;
 
-  return new Player(idPlayer, namePlayer, register_date, winRatio, totalGames, totalWins);
+  return new Player(id, name, register_date, winRatio, totalGames, totalWins, lossRatio);
 }
 
  

@@ -1,9 +1,10 @@
 const { Player, Games }  = require ("./connectMySQL");
 
-async function  addNewPlayer (player) {
+async function  addNewPlayer (player) {  // bbdd: constructor
 
      return await Player.create({name: player.name, register_date: player.register_date});
  }
+
 
  async function  getAllPlayers () {
 
@@ -32,7 +33,8 @@ async function ranking() {
 /*
 async function modifyPlayer(id) {
 
-    return await Player.update({name: player.name, registerDate: player.register_date});
+    return await Player.update({name: player.name, registerDate: player.register_date}); 
+
 }
 */
 
