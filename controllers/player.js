@@ -16,7 +16,7 @@ const addNewPlayer = async (req, res) => {
       player0.name = req.body.name;
       await PlayerDB.addNewPlayer(player0);
       //envia resposta
-      res.status(200).json({message: `${player0.namePlayer} created successfully!! Congratulations!!!`,});
+      res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
     } else { // si no te nom, que el jugador que creï sigui ANONYMOUS
        req.body.name = "ANONYMOUS"
       let player1 = new Player();

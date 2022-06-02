@@ -3,7 +3,7 @@
 class Player {
 
     constructor(name){
-        this.idPlayer = null
+        this.id = null
         this.name = name
         this.register_date = new Date
     }
