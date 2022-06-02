@@ -21,8 +21,8 @@ async function addGame(game) {
 
 }
 
-async function getAllGames(game) {
-    return await Games.findAll({where: {PlayerIdPlayer: game.idPlayer}});
+async function getAllGames(player) {
+    return await Games.findAll({where: {PlayerId: player.id}});
 
 }
 
