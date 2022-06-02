@@ -2,7 +2,7 @@ const { Player, Games }  = require ("./connectMySQL");
 
 async function  addNewPlayer (player) {
 
-     return await Player.create({name: player.name, registerDate: player.register_date});
+     return await Player.create({namePlayer: player.namePlayer, register_date: player.register_date});
  }
 
  async function  getAllPlayers () {
@@ -10,13 +10,13 @@ async function  addNewPlayer (player) {
     return await Player.findAll();
 }
 
-async function getPlayer(id) {
-    return await Player.findOne({where: {idPlayer: id}});
+async function getPlayer(idPlayer) {
+    return await Player.findOne({where: {idPlayer: idPlayer}});
 }
   
 
 async function addGame(game) {
-    return await Games.create({dice1: game.dice1, dice2: game.dice2, result: game.result, score: game.score, PlayerIdPlayer: game.idPlayer});
+    return await Games.create({dice1: game.dice1, dice2: game.dice2, score: game.score, PlayerIdPlayer: game.idPlayer});
 
 }
 
@@ -45,7 +45,7 @@ async function deletePlayerGames(game) {
 //winner
 
 async function updateScore() {
-    return await Player.update({score: Player.score});
+    return await Games.update({score: Games.score});
 }
 
 
