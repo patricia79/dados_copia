@@ -47,10 +47,10 @@ const getAllPlayers = async (req, res) => {
 const addPlayerGame = async (req, res) => {
   try {
     
-    // comprovar que el jugador existeix
+    // si no hi ha id...
     if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
-    } else {
+    } else { // si hi ha id...
       let player = await PlayerDB.getPlayer(req.params.id);
         if (player) { // si hi ha jugador
         let game = dice_game(req.params.id);
@@ -60,7 +60,7 @@ const addPlayerGame = async (req, res) => {
         res.status(200).json({
           message: `Game created successfully!! Congratulations!!!`,
         });
-      } else {
+      } else {// si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
       }
     }
@@ -73,16 +73,41 @@ const addPlayerGame = async (req, res) => {
 
 const getAllGames = async (req, res) => {
   try {
-    // TODO: si no hi ha jugador, retornar error
+   // si no hi ha id...
         if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
-    } else {  // si hi ha jugador, comprovar que existeix
+    } else {  // si hi ha id...
       let player = await PlayerDB.getPlayer(req.params.id);
      
-      if (player) { // Retornar el llistat de tirades
-        let games = await PlayerDB.getAllGames(player);
-        res.status(200).json(games);
-      } else {
+      if (player) { // si hi ha jugador
+        let games = await PlayerDB.getAllGames(player); //Retornar el llistat de tirades
+        res.status(200).json({message: {games}});
+      } else { // si el jugador no existeix
+        res.status(404).json({ message: "Player not found" });
+      }
+    }
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+};
+
+//TODO  DELETE /games/{id}: elimina les tirades del jugador /deletePlayerGames
+
+const deletePlayerGames = async (req, res) => {
+  try {
+// si no hi ha id...
+ if (!req.params.id) {
+  res.status(400).json({ message: "Bad request" });
+  
+} else { // si hi ha id...
+  let player = await PlayerDB.getPlayer(req.params.id);
+   // si hi ha jugador
+     if (player) {
+        await PlayerDB.deletePlayerGames(player);
+        res.status(200).json({
+          message: `Player ${player.name} rolls deleted successfully !! Congratulations!!!`, // tirades eliminades
+        });
+      } else { // si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
       }
     }
@@ -92,7 +117,9 @@ const getAllGames = async (req, res) => {
 };
 
 
+
 // TODO  GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors / ranking
+
 const ranking = async (req, res) => {
   try {
 
@@ -142,29 +169,7 @@ const modifyPlayer = async(req, res) =>{
 }
 
 
-//TODO  DELETE /games/{id}: elimina les tirades del jugador /deletePlayerGames
 
-const deletePlayerGames = async (req, res) => {
-  try {
- // TODO: comprovar que hi ha jugador
- if (!req.params.id) {
-  res.status(400).json({ message: "Bad request" });
-} else {
-  let player = await PlayerDB.getPlayer(req.params.id);
-   // TODO: si hi ha jugador, comprovar que existeix i esborrar les tirades
-     if (player) {
-        await PlayerDB.deletePlayerGames(player);
-        res.status(200).json({
-          message: `Player ${player.name} rolls deleted successfully!! Congratulations!!!`,
-        });
-      } else {
-        res.status(404).json({ message: "Player not found" });
-      }
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
 
 
 
