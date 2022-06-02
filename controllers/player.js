@@ -5,7 +5,7 @@ const PlayerDB = require("../data/crud");
 let { dice_game, winRatio, lossRatio } = require("../services/game_logic");
 
 
-//POST /players: crea un jugador /addNewPlayer
+ //TODO POST /players: crea un jugador// addNewPlayer
 
 const addNewPlayer = async (req, res) => {
   try {
@@ -30,7 +30,7 @@ const addNewPlayer = async (req, res) => {
   }
 };
 
-//TODO: GET /players: retorna tots els jugadors amb el seu percentatge mig d’èxits /getAllPlayers
+//TODO: // GET /players: retorna el llistat de tots els jugadors del sistema amb el seu percentatge mig d’èxits / getAllPlayers
 
 const getAllPlayers = async (req, res) => {
   try {
@@ -42,7 +42,7 @@ const getAllPlayers = async (req, res) => {
 };
 
 
-// TODO POST /players/{id}/games: un jugador específic realitza una tirada
+// TODO POST /games/{id}: un jugador específic realitza una tirada / addPlayerGame
 
 const addPlayerGame = async (req, res) => {
   try {
@@ -69,7 +69,7 @@ const addPlayerGame = async (req, res) => {
   }
 };
 
-// TODO GET /players/{id}/games: retorna el llistat de jugades per un jugador.
+// TODO  GET /games/{id}: retorna el llistat de jugades per un jugador / getAllGames
 
 const getAllGames = async (req, res) => {
   try {
@@ -92,8 +92,7 @@ const getAllGames = async (req, res) => {
 };
 
 
-// TODO GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors
-
+// TODO  GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors / ranking
 const ranking = async (req, res) => {
   try {
 
@@ -111,10 +110,20 @@ const ranking = async (req, res) => {
   }
 };
 
+const generalRanking = async(req, res) => {
+  try {
+    const totalPlayers = await Player.count()
+    const sumWinRate = await Player.sum('winRate')
+    const generalWinRate = sumWinRate/totalPlayers
+    res.status(200).send({generalWinRate})
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
 
 
-//TODO PUT /players: modifica el nom del jugador
 
+//TODO  PUT players/{id}: modifica el nom del jugador / modifyPlayer
 
 const modifyPlayer = async(req, res) =>{
   const idPlayer = req.params.id
@@ -133,39 +142,7 @@ const modifyPlayer = async(req, res) =>{
 }
 
 
-/*
-    if (req.body.name) {
-      let player0 = new Player();
-      player0.name = req.body.name;
-      await PlayerDB.modifyPlayer(player0);
-
-
-
-    if (!req.body.name) {
-      res.status(400).json({ message: "Bad request" });
-    } else {
-      let player = await PlayerDB.getPlayer(req.params.id);
-      if (player) {
-        player.name = req.body.name;
-        await PlayerDB.modifyPlayer(player);
-        res.status(200).json({
-          message: `${player.name} modified successfully!! Congratulations!!!`});
-      } else {
-        res.status(404).json({ message: "Player not found" });
-      }
-    }
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
-*/
-
-
-
-
-   
-
-//TODO DELETE /players/{id}/games: elimina les tirades del jugador
+//TODO  DELETE /games/{id}: elimina les tirades del jugador /deletePlayerGames
 
 const deletePlayerGames = async (req, res) => {
   try {
@@ -189,110 +166,38 @@ const deletePlayerGames = async (req, res) => {
   }
 };
 
-/*
-
-// TODO GET /players/ranking/loser: retorna el jugador amb pitjor percentatge d’èxit
-
-const loserPlayer = async (req, res) => {
-  try {
-
-    let players = await PlayerDB.getAllPlayers();
-    let ranking = winRatio(players);
-    let total = 0;
-    let win = 0;
-    let loss = 0;
-    for (let i = 0; i < players.length; i++) {
-      total += players[i].games.length;
-      players[i].games.forEach((game) => {
-        if (game.result === "win") {
-          win += 1;
-        } else {
-          loss += 1;
-        }
-      });
-    }
-  
-    res.status(200).json({
-      message: `${loser.name} is the loser!! Congratulations!!!`,
-    });
-  }
-
-  catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-};
 
 
-// TODO GET /players/ranking/winner: retorna el jugador amb millor percentatge d’èxit
+// TODO // GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit / loserPlayer
 
-const winnerPlayer = async (req, res) => {
-  try {
-    let players = await PlayerDB.getAllPlayers();
-    let ranking = winRatio(players);
-    let total = 0;
-    let win = 0;
-    let loss = 0;
-    for (let i = 0; i < players.length; i++) {
-      total += players[i].games.length;
-      players[i].games.forEach((game) => {
-        if (game.result === "win") {
-          win += 1;
-        } else {
-          loss += 1;
-        }
-      });
-    }
-    let winRatio = win / total;
-    let lossRatio = loss / total;
-    let winner = players[0];
-    for (let i = 0; i < players.length; i++) {
-      if (winRatio < winRatio) {
-        winner = players[i];
-      }
-    }
-    res.status(200).json({
-      message: `${winner.name} is the winner!! Congratulations!!!`,
-    });
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-  }
 
-};
-
-*/
-
-const generalRanking = async(req, res) => {
-  try {
-    const totalPlayers = await Player.count()
-    const sumWinRate = await Player.sum('winRate')
-    const generalWinRate = sumWinRate/totalPlayers
-    res.status(200).send({generalWinRate})
-  } catch(e){
-    res.status(500).send({message:e.message})
-  }
-}
-
-const getBetterPlayer = async(req, res) => {
-  const betterWinRate = await Player.max('winRate')
-  console.log(betterWinRate)
-  try {
-    const player = await Player.findAll({where:{winRate:betterWinRate}})
-    res.status(200).send({ player })
-  } catch (e) {
-    res.status(500).send({message:e.message})
-  }
-}
-
-const getWorstPlayer = async(req, res) => {
+const loserPlayer = async(req, res) => {
   const worstWinRate = await Player.min('winRate')
   console.log(worstWinRate)
   try {
     const player = await Player.findAll({where:{winRate:worstWinRate}})
     res.status(200).send({ player })
-  } catch (e) {
-    res.status(500).send({message:e.message})
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
   }
 }
+
+
+
+// TODO // GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit / winnerPlayer
+
+const winnerPlayer = async(req, res) => {
+  const betterWinRate = await Player.max('winRate')
+  console.log(betterWinRate)
+  try {
+    const player = await Player.findAll({where:{winRate:betterWinRate}})
+    res.status(200).json({message: {player}})
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+
 
 module.exports = {
   addNewPlayer,
@@ -301,5 +206,8 @@ module.exports = {
   getAllGames,
   deletePlayerGames,
   modifyPlayer,
-  ranking
+  ranking,
+  generalRanking,
+  loserPlayer,
+  winnerPlayer
 }
