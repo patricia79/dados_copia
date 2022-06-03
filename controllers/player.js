@@ -35,7 +35,7 @@ const addNewPlayer = async (req, res) => {
 const getAllPlayers = async (req, res) => {
   try {
     let players = await PlayerDB.getAllPlayers();
-    res.status(200).json({players});
+    res.status(200).json({message: {players}});
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }

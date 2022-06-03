@@ -42,9 +42,9 @@ async function connectMySQL() {
       register_date: {
         type: Sequelize.DATE,
         allowNull: false,
-      }
-
-    });
+      },
+     
+      });
   
   const Games = sequelize.define('Games', {
         idGames: {
