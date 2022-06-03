@@ -11,8 +11,8 @@ async function  addNewPlayer (player) {  // bbdd: constructor
     return await Player.findAll();
 }
 
-async function getPlayer(id) {
-    return await Player.findOne({where: {id: id}});
+async function getPlayer(player) {
+    return await Player.findOne({where: {id: player.id}});
 }
   
 
