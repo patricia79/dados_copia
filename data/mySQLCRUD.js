@@ -1,8 +1,11 @@
+const { winRatio } = require("../services/game_logic");
 const { Player, Games }  = require ("./connectMySQL");
+const { Op } = require("sequelize");
+
 
 async function  addNewPlayer (player) {  // bbdd: constructor
 
-     return await Player.create({name: player.name, register_date: player.register_date});
+     return await Player.create({name: player.name, register_date: player.register_date, totalGames: player.totalGames, totalWins: player.totalWins, winRatio: player.winRatio});
  }
 
 
@@ -11,8 +14,23 @@ async function  addNewPlayer (player) {  // bbdd: constructor
     return await Player.findAll();
 }
 
+async function  getAllPlayersRanking () {
+
+    return await Player.findAll({where: {totalGames: {[Op.gt]: 0}}});
+}
+
+async function  getLoserPlayersRanking () {
+
+    return await Player.findAll({where: {totalGames: {[Op.gt]: 0}}, order: [['winRatio', 'ASC']], limit: 1});
+}
+
+async function  getWinnerPlayersRanking () {
+
+    return await Player.findAll({where: {totalGames: {[Op.gt]: 0}}, order: [['winRatio', 'DESC']], limit: 1});
+}
+
 async function getPlayer(id) {
-    return await Player.findOne({where: {id: id}});
+    return await Player.findOne({where: {idPlayer: id}});
 }
   
 
@@ -22,18 +40,19 @@ async function addGame(game) {
 }
 
 async function getAllGames(player) {
-    return await Games.findAll({where: {PlayerId: player.id}});
+    //PlayerIdPlayer es la columna de base de datos de la tabla games dnd se almacenan las id de los player (ForeignKey)
+    return await Games.findAll({where: {PlayerIdPlayer: player.id}});
 
 }
 
 async function ranking() {
-    return await Player.findAll({order: [['score', 'DESC']]});
+    return await Player.findAll();
     
 } 
 
-async function modifyPlayer(player) {
+async function modifyNamePlayerData(player) {
 
-    return await Player.update({name: player.name}, {where: {id: player.id}});
+    return await Player.update({name: player.name}, {where: {idPlayer: player.id}});
 
 }
 
@@ -52,7 +71,7 @@ async function updateScore() {
 
 
 
-module.exports = { addNewPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, modifyPlayer, deletePlayerGames, updateScore};
+module.exports = { addNewPlayer, getAllPlayers, getPlayer, addGame, getAllGames, ranking, getLoserPlayersRanking, getWinnerPlayersRanking, modifyNamePlayerData, getAllPlayersRanking, deletePlayerGames, updateScore};
 
 
    

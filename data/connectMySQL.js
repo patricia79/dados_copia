@@ -43,6 +43,27 @@ async function connectMySQL() {
         type: Sequelize.DATE,
         allowNull: false,
       },
+
+      totalGames: {  
+  
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+  
+      },
+      totalWins: {
+        type: Sequelize.INTEGER,
+        defaultValue: 0,
+        allowNull: false,
+  
+      },
+      
+    winRatio: {
+      type: Sequelize.DECIMAL(10, 2),
+      defaultValue: 0,
+      allowNull: false,
+    }
+
      
       });
   
@@ -65,25 +86,7 @@ async function connectMySQL() {
         type: Sequelize.BOOLEAN,
         allowNull: false},
 
-        totalGames: {  
-  
-          type: Sequelize.INTEGER,
-          defaultValue: 0,
-          allowNull: false,
-    
-        },
-        totalWins: {
-          type: Sequelize.INTEGER,
-          defaultValue: 0,
-          allowNull: false,
-    
-        },
-        
-      winRatio: {
-        type: Sequelize.DECIMAL(10, 2),
-        defaultValue: 0,
-        allowNull: false,
-      }
+       
 
        })
 

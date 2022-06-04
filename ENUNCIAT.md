@@ -15,17 +15,17 @@ No es pot eliminar una partida en concret, però si que es pot eliminar tot el l
 El software ha de respectar els principals patrons de disseny.
 Has de tenir en compte els següents detalls de construcció:
 
-POST /players: crea un jugador 
-GET /players: retorna el llistat de tots els jugadors del sistema amb el seu percentatge d’èxits
+POST /players: crea un jugador ok
+GET /players: retorna el llistat de tots els jugadors del sistema amb el seu percentatge d’èxits ok
 
-PUT /players/{id}: modifica el nom del jugador
+PUT /players/{id}: modifica el nom del jugador ok
 
 POST /games/{id}: un jugador específic realitza una tirada
 DELETE /games/{id}: elimina les tirades del jugador
-GET /games/{id}: retorna el llistat de jugades per un jugador.
-GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors
-GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit
-GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit
+GET /games/{id}: retorna el llistat de jugades per un jugador. ok
+GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors 
+GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit 
+GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit 
 
 Nivell 1
 Persistència: utilitza com a base de dades Mysql (amb Sequelize com a ORM).

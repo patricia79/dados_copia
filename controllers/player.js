@@ -11,7 +11,7 @@ const addNewPlayer = async (req, res) => {
   try {
 
     // si te nom, que el guardi en la base de dades
-    if (req.body.name) {
+    if (req.body.name && req.body.name.trim() !== "") {
       let player0 = new Player();
       player0.name = req.body.name;
       await PlayerDB.addNewPlayer(player0);
@@ -55,7 +55,8 @@ const addPlayerGame = async (req, res) => {
         if (player) { // si hi ha jugador
         let game = dice_game(req.params.id);
         await PlayerDB.addGame(game);
-
+          //TODO: actualitzar ratios del jugador
+          //await PlayerDB.savePlayer(player);
         // Realitzar la tirada
         res.status(200).json({
           message: `Game created successfully!! Congratulations!!!`,
@@ -77,8 +78,15 @@ const getAllGames = async (req, res) => {
         if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
     } else {  // si hi ha id...
-      let player = await PlayerDB.getPlayer(req.params.id);
-     
+      let playerdb = await PlayerDB.getPlayer(req.params.id);
+      // Creamos modelo player e igualamos el modelo playerdb con player.
+      let player = new Player();
+      player.id = playerdb.idPlayer;
+      player.name = playerdb.name;
+      player.register_date = playerdb.register_date;
+      player.totalGames = playerdb.totalGames;
+      player.totaWins = playerdb.totalWins;
+      player.winRatio = playerdb.winRatio;
       if (player) { // si hi ha jugador
         let games = await PlayerDB.getAllGames(player); //Retornar el llistat de tirades
         res.status(200).json({message: {games}});
@@ -122,43 +130,23 @@ const deletePlayerGames = async (req, res) => {
 
 const ranking = async (req, res) => {
   try {
-
-    if (Game.score = true) {
-    await Player.increment(['totalGames','totalWins'],{where: {PlayeridPlayer: game.idPlayer}})  
-    } else {
-    await Player.increment(['totalGames'],{where: {PlayeridPlayer: game.idPlayer}})  
-    }
-  console.log( `totalGames: ${totalGames},  totalWins: ${totalWins},totalWins, }`)
-    let players = await PlayerDB.getAllPlayers();    
-    winRatio(players); 
+    let players = await PlayerDB.getAllPlayersRanking();
+    res.status(200).json({message: {players}});    
+   // winRatio(players); 
    
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
+//TODO  PUT players/{id}: modifica el nom del jugador / modifyNamePlayer
 
-const generalRanking = async(req, res) => {
-  try {
-    const totalPlayers = await Player.count()
-    const sumWinRate = await Player.sum('winRate')
-    const generalWinRate = sumWinRate/totalPlayers
-    res.status(200).send({generalWinRate})
-  } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
-  }
-}
-
-
-
-//TODO  PUT players/{id}: modifica el nom del jugador / modifyPlayer
-
-const modifyPlayer = async(req, res) =>{
+const modifyNamePlayerController = async(req, res) =>{
   const idPlayer = req.params.id
   const namePlayer = req.body.name
   try{
         const player =new Player(namePlayer)
         player.id = idPlayer
-        await PlayerDB.modifyPlayer(player)
+        await PlayerDB.modifyNamePlayerData(player)
         res.status(200).json({message: `Player ${player.name} modified successfully!! Congratulations!!!`})
   }
   catch(error){
@@ -170,32 +158,31 @@ const modifyPlayer = async(req, res) =>{
 
 // TODO // GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit / loserPlayer
 
-
 const loserPlayer = async(req, res) => {
-  const worstWinRate = await Player.min('winRate')
-  console.log(worstWinRate)
   try {
-    const player = await Player.findAll({where:{winRate:worstWinRate}})
-    res.status(200).send({ player })
+    let players = await PlayerDB.getLoserPlayersRanking();
+    res.status(200).json({message: {players}});    
+   // winRatio(players); 
+   
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 
 
 // TODO // GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit / winnerPlayer
 
 const winnerPlayer = async(req, res) => {
-  const betterWinRate = await Player.max('winRate')
-  console.log(betterWinRate)
   try {
-    const player = await Player.findAll({where:{winRate:betterWinRate}})
-    res.status(200).json({message: {player}})
+    let players = await PlayerDB.getWinnerPlayersRanking();
+    res.status(200).json({message: {players}});    
+   // winRatio(players); 
+   
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
-}
+};
 
 
 
@@ -205,9 +192,8 @@ module.exports = {
   addPlayerGame,
   getAllGames,
   deletePlayerGames,
-  modifyPlayer,
+  modifyNamePlayerController,
   ranking,
-  generalRanking,
   loserPlayer,
   winnerPlayer
 }
