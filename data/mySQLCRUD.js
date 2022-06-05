@@ -23,6 +23,8 @@ async function addGameData(game) {
     
     }
 
+
+
 async function getAllGamesData(player) {
         //PlayerIdPlayer es la columna de base de datos de la tabla games dnd se almacenan las id de los player (ForeignKey)
         return await Games.findAll({where: {PlayerIdPlayer: player.id}});
@@ -43,6 +45,13 @@ async function  getAllPlayersRanking() {
 async function modifyNamePlayerData(player) {
 
     return await Player.update({name: player.name}, {where: {idPlayer: player.id}});
+
+}
+async function updatePlayerData(player) {
+    
+// de fet he actualitzat l'objecte player sencer
+
+    return await Player.update({name: player.name, register_date: player.register_date, totalGames: player.totalGames, totalWins: player.totalWins, winRatio: player.winRatio }, {where: {idPlayer: player.id}});
 
 }
 
@@ -79,6 +88,7 @@ module.exports = {
     deletePlayerGamesData, 
     getAllPlayersRanking, 
     modifyNamePlayerData, 
+    updatePlayerData,
     getLoserPlayersRanking, 
     getWinnerPlayersRanking,
 };

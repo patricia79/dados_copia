@@ -7,7 +7,7 @@ class Player {
         this.name = name
         this.register_date = new Date
         this.totalGames = 0
-        this.totaWins = 0
+        this.totalWins = 0
         this.winRatio = 0
             }
        }

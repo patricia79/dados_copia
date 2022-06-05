@@ -2,66 +2,90 @@
 
 const Player = require("../models/Player");
 const PlayerDB = require("../data/crud");
-let { dice_game, winRatio, lossRatio } = require("../services/game_logic");
+let { dice_game, updateScore, updateWinRatio } = require("../services/game_logic");
 
-
- //TODO POST /players: crea un jugador// addNewPlayer
+//TODO POST /players: crea un jugador// addNewPlayer
 
 const addNewPlayer = async (req, res) => {
   try {
-
     // si te nom, que el guardi en la base de dades
     if (req.body.name && req.body.name.trim() !== "") {
       let player0 = new Player();
       player0.name = req.body.name;
       await PlayerDB.addNewPlayerData(player0);
       //envia resposta
-      res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
-    } else { // si no te nom, que el jugador que creï sigui ANONYMOUS
-       req.body.name = "ANONYMOUS"
+      res
+        .status(200)
+        .json({
+          message: `${player0.name} created successfully!! Congratulations!!!`,
+        });
+    } else {
+      // si no te nom, que el jugador que creï sigui ANONYMOUS
+      req.body.name = "ANONYMOUS";
       let player1 = new Player();
       player1.name = req.body.name;
-      await PlayerDB.addNewPlayerData(player1);// 
+      await PlayerDB.addNewPlayerData(player1); //
       //envia resposta
-      res.status(200).json({message: `${player1.name} created successfully!! Congratulations!!!`,});
+      res
+        .status(200)
+        .json({
+          message: `${player1.name} created successfully!! Congratulations!!!`,
+        });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-//TODO: // GET /players: retorna el llistat de tots els jugadors del sistema amb el seu percentatge mig d’èxits / getAllPlayers
+//TODO: // GET /players: retorna el llistaupdateWinRatiot de tots els jugadors del sistema amb el seu percentatge mig d’èxits / getAllPlayers
 
 const getAllPlayers = async (req, res) => {
   try {
     let players = await PlayerDB.getAllPlayersData();
-    res.status(200).json({message: {players}});
+    res.status(200).json({ message: { players } });
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-
 // TODO POST /games/{id}: un jugador específic realitza una tirada / addPlayerGame
 
 const addPlayerGame = async (req, res) => {
   try {
-    
     // si no hi ha id...
     if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
-    } else { // si hi ha id...
-      let player = await PlayerDB.getPlayerData(req.params.id);
-        if (player) { // si hi ha jugador
+    } else {
+      // si hi ha id...
+      let playerdb = await PlayerDB.getPlayerData(req.params.id);
+      if (playerdb) {
+        // si hi ha jugador
         let game = dice_game(req.params.id);
+         // Realitzar la tirada
         await PlayerDB.addGameData(game);
-          //TODO: actualitzar ratios del jugador
-          //await PlayerDB.savePlayer(player);
-        // Realitzar la tirada
+        //TODO: actualitzar ratios del jugador
+        let player = new Player();
+        player.id = playerdb.idPlayer;
+        player.name = playerdb.name;
+        player.register_date = playerdb.register_date;
+        player.totalGames = playerdb.totalGames;
+        player.totaWins = playerdb.totalWins;
+        player.winRatio = playerdb.winRatio;
+
+/* este player que igualo en la linea siguiente de abajo con await updateWinRatio(player) y await updateScore(player);es el player que return en la 
+funcion updateWinRatio y updateScore de ./services/game_logic.js */
+
+           player = await updateScore(player, game);
+        player = await updateWinRatio(player);
+    
+        // guardar a la base de dades la tirada que ha realitzat, actualizant les dades dels totals i winRatio i demes
+        // de fet he actualitzat l'objecte player sencer
+        await PlayerDB.updatePlayerData(player);
         res.status(200).json({
           message: `Game created successfully!! Congratulations!!!`,
         });
-      } else {// si el jugador no existeix
+      } else {
+        // si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
       }
     }
@@ -74,10 +98,11 @@ const addPlayerGame = async (req, res) => {
 
 const getAllGames = async (req, res) => {
   try {
-   // si no hi ha id...
-        if (!req.params.id) {
+    // si no hi ha id...
+    if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
-    } else {  // si hi ha id...
+    } else {
+      // si hi ha id...
       let playerdb = await PlayerDB.getPlayerData(req.params.id);
 
       // Creamos modelo player e igualamos el modelo playerdb con player.
@@ -88,11 +113,13 @@ const getAllGames = async (req, res) => {
       player.totalGames = playerdb.totalGames;
       player.totaWins = playerdb.totalWins;
       player.winRatio = playerdb.winRatio;
-      
-      if (player) { // si hi ha jugador
+
+      if (player) {
+        // si hi ha jugador
         let games = await PlayerDB.getAllGamesData(player); //Retornar el llistat de tirades
-        res.status(200).json({message: {games}});
-      } else { // si el jugador no existeix
+        res.status(200).json({ message: { games } });
+      } else {
+        // si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
       }
     }
@@ -105,19 +132,20 @@ const getAllGames = async (req, res) => {
 
 const deletePlayerGames = async (req, res) => {
   try {
-// si no hi ha id...
- if (!req.params.id) {
-  res.status(400).json({ message: "Bad request" });
-
-} else { // si hi ha id...
-  let player = await PlayerDB.getPlayerData(req.params.id);
-   // si hi ha jugador
-     if (player) {
+    // si no hi ha id...
+    if (!req.params.id) {
+      res.status(400).json({ message: "Bad request" });
+    } else {
+      // si hi ha id...
+      let player = await PlayerDB.getPlayerData(req.params.id);
+      // si hi ha jugador
+      if (player) {
         await PlayerDB.deletePlayerGamesData(player);
         res.status(200).json({
           message: `Player ${player.name} rolls deleted successfully !! Congratulations!!!`, // tirades eliminades
         });
-      } else { // si el jugador no existeix
+      } else {
+        // si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
       }
     }
@@ -126,67 +154,59 @@ const deletePlayerGames = async (req, res) => {
   }
 };
 
-
-
 // TODO  GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors / ranking
 
 const ranking = async (req, res) => {
   try {
     let players = await PlayerDB.getAllPlayersRanking();
-    res.status(200).json({message: {players}});    
-   // winRatio(players); 
-   
+    res.status(200).json({ message: { players } });
+    // winRatio(players);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 //TODO  PUT players/{id}: modifica el nom del jugador / modifyNamePlayer
 
-const modifyNamePlayerController = async(req, res) =>{
-  const idPlayer = req.params.id
-  const namePlayer = req.body.name
-  try{
-        const player =new Player(namePlayer)
-        player.id = idPlayer
-        await PlayerDB.modifyNamePlayerData(player)
-        res.status(200).json({message: `Player ${player.name} modified successfully!! Congratulations!!!`})
-  }
-  catch(error){
+const modifyNamePlayerController = async (req, res) => {
+  const idPlayer = req.params.id;
+  const namePlayer = req.body.name;
+  try {
+    const player = new Player(namePlayer);
+    player.id = idPlayer;
+    await PlayerDB.modifyNamePlayerData(player);
+    res
+      .status(200)
+      .json({
+        message: `Player ${player.name} modified successfully!! Congratulations!!!`,
+      });
+  } catch (error) {
     res.status(404).json({ message: "Player not found" });
   }
-}
-
-
+};
 
 // TODO // GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit / loserPlayer
 
-const loserPlayer = async(req, res) => {
+const loserPlayer = async (req, res) => {
   try {
     let players = await PlayerDB.getLoserPlayersRanking();
-    res.status(200).json({message: {players}});    
-   // winRatio(players); 
-   
+    res.status(200).json({ message: { players } });
+    // winRatio(players);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
 
 // TODO // GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit / winnerPlayer
 
-const winnerPlayer = async(req, res) => {
+const winnerPlayer = async (req, res) => {
   try {
     let players = await PlayerDB.getWinnerPlayersRanking();
-    res.status(200).json({message: {players}});    
-   // winRatio(players); 
-   
+    res.status(200).json({ message: { players } });
+    // winRatio(players);
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-
 
 module.exports = {
   addNewPlayer,
@@ -197,5 +217,5 @@ module.exports = {
   modifyNamePlayerController,
   ranking,
   loserPlayer,
-  winnerPlayer
-}
+  winnerPlayer,
+};
