@@ -1,21 +1,18 @@
 {
-  "name": "cursonodejs",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "joc_daus_api_4.2",
+  "version": "4.0.0",
+  "description": "Joc de daus de l'sprint 4",
+  "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node app.js",
+     "start": "node app.js",
     "dev": "nodemon app.js"
   },
-  "author": "",
+  "author": "Patricia González",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.20.0",
-    "connect-multiparty": "^2.2.0",
     "express": "^4.17.3",
     "mongoose-pagination": "^1.0.0",
-    "moongose": "^1.0.0",
     "mysql2": "^2.3.3",
     "sequelize": "^6.20.1"
   },
