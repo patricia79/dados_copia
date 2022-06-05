@@ -28,6 +28,14 @@ async function updateScore(player, game) {
 return player;
 
 }
+async function updateScore2(player) {
+  player.totalGames = 0;
+  player.totalWins = 0;
+  player.winRatio = 0;
+  
+return player;
+
+}
 
 // vaig a crear una funció per actualitzar el percentatge de partides guanyades i li passo el model player
 
@@ -53,4 +61,4 @@ for (let index = 0; index <= players.length; index++) {
 }
 
 
-module.exports = { dice_game, updateScore, updateWinRatio, averageWinRatio };
+module.exports = { dice_game, updateScore, updateWinRatio, averageWinRatio, updateScore2 };
