@@ -14,14 +14,14 @@ const addNewPlayer = async (req, res) => {
     if (req.body.name && req.body.name.trim() !== "") {
       let player0 = new Player();
       player0.name = req.body.name;
-      await PlayerDB.addNewPlayer(player0);
+      await PlayerDB.addNewPlayerData(player0);
       //envia resposta
       res.status(200).json({message: `${player0.name} created successfully!! Congratulations!!!`,});
     } else { // si no te nom, que el jugador que creï sigui ANONYMOUS
        req.body.name = "ANONYMOUS"
       let player1 = new Player();
       player1.name = req.body.name;
-      await PlayerDB.addNewPlayer(player1);// 
+      await PlayerDB.addNewPlayerData(player1);// 
       //envia resposta
       res.status(200).json({message: `${player1.name} created successfully!! Congratulations!!!`,});
     }
@@ -34,7 +34,7 @@ const addNewPlayer = async (req, res) => {
 
 const getAllPlayers = async (req, res) => {
   try {
-    let players = await PlayerDB.getAllPlayers();
+    let players = await PlayerDB.getAllPlayersData();
     res.status(200).json({message: {players}});
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
@@ -51,10 +51,10 @@ const addPlayerGame = async (req, res) => {
     if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
     } else { // si hi ha id...
-      let player = await PlayerDB.getPlayer(req.params.id);
+      let player = await PlayerDB.getPlayerData(req.params.id);
         if (player) { // si hi ha jugador
         let game = dice_game(req.params.id);
-        await PlayerDB.addGame(game);
+        await PlayerDB.addGameData(game);
           //TODO: actualitzar ratios del jugador
           //await PlayerDB.savePlayer(player);
         // Realitzar la tirada
@@ -78,7 +78,8 @@ const getAllGames = async (req, res) => {
         if (!req.params.id) {
       res.status(400).json({ message: "Bad request" });
     } else {  // si hi ha id...
-      let playerdb = await PlayerDB.getPlayer(req.params.id);
+      let playerdb = await PlayerDB.getPlayerData(req.params.id);
+
       // Creamos modelo player e igualamos el modelo playerdb con player.
       let player = new Player();
       player.id = playerdb.idPlayer;
@@ -87,8 +88,9 @@ const getAllGames = async (req, res) => {
       player.totalGames = playerdb.totalGames;
       player.totaWins = playerdb.totalWins;
       player.winRatio = playerdb.winRatio;
+      
       if (player) { // si hi ha jugador
-        let games = await PlayerDB.getAllGames(player); //Retornar el llistat de tirades
+        let games = await PlayerDB.getAllGamesData(player); //Retornar el llistat de tirades
         res.status(200).json({message: {games}});
       } else { // si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
@@ -108,10 +110,10 @@ const deletePlayerGames = async (req, res) => {
   res.status(400).json({ message: "Bad request" });
 
 } else { // si hi ha id...
-  let player = await PlayerDB.getPlayer(req.params.id);
+  let player = await PlayerDB.getPlayerData(req.params.id);
    // si hi ha jugador
      if (player) {
-        await PlayerDB.deletePlayerGames(player);
+        await PlayerDB.deletePlayerGamesData(player);
         res.status(200).json({
           message: `Player ${player.name} rolls deleted successfully !! Congratulations!!!`, // tirades eliminades
         });
