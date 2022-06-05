@@ -83,9 +83,15 @@ funcion updateWinRatio y updateScore de ./services/game_logic.js */
         // guardar a la base de dades la tirada que ha realitzat, actualizant les dades dels totals i winRatio i demes
         // de fet he actualitzat l'objecte player sencer
         await PlayerDB.updatePlayerData(player);
-        res.status(200).json({
-          message: `Game created successfully!! Congratulations!!!`,
-        });
+        if (game.score == true) {
+          res.status(200).json({
+            message: `Game created successfully!! Congratulations!! You've won!!`,
+          });
+        } else {
+          res.status(200).json({
+            message: `Game created successfully!! Sorry, You've lost`,
+          });
+        }
       } else {
         // si el jugador no existeix
         res.status(404).json({ message: "Player not found" });
