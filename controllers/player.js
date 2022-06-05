@@ -2,7 +2,12 @@
 
 const Player = require("../models/Player");
 const PlayerDB = require("../data/crud");
-let { dice_game, updateScore, updateWinRatio } = require("../services/game_logic");
+let {
+  dice_game,
+  updateScore,
+  updateWinRatio,
+  averageWinRatio,
+} = require("../services/game_logic");
 
 //TODO POST /players: crea un jugador// addNewPlayer
 
@@ -14,11 +19,9 @@ const addNewPlayer = async (req, res) => {
       player0.name = req.body.name;
       await PlayerDB.addNewPlayerData(player0);
       //envia resposta
-      res
-        .status(200)
-        .json({
-          message: `${player0.name} created successfully!! Congratulations!!!`,
-        });
+      res.status(200).json({
+        message: `${player0.name} created successfully!! Congratulations!!!`,
+      });
     } else {
       // si no te nom, que el jugador que creï sigui ANONYMOUS
       req.body.name = "ANONYMOUS";
@@ -26,18 +29,16 @@ const addNewPlayer = async (req, res) => {
       player1.name = req.body.name;
       await PlayerDB.addNewPlayerData(player1); //
       //envia resposta
-      res
-        .status(200)
-        .json({
-          message: `${player1.name} created successfully!! Congratulations!!!`,
-        });
+      res.status(200).json({
+        message: `${player1.name} created successfully!! Congratulations!!!`,
+      });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
 
-//TODO: // GET /players: retorna el llistaupdateWinRatiot de tots els jugadors del sistema amb el seu percentatge mig d’èxits / getAllPlayers
+//TODO: // GET /players: retorna el llistaupdateWinRatio de tots els jugadors del sistema amb el seu percentatge mig d’èxits / getAllPlayers
 
 const getAllPlayers = async (req, res) => {
   try {
@@ -61,7 +62,7 @@ const addPlayerGame = async (req, res) => {
       if (playerdb) {
         // si hi ha jugador
         let game = dice_game(req.params.id);
-         // Realitzar la tirada
+        // Realitzar la tirada
         await PlayerDB.addGameData(game);
         //TODO: actualitzar ratios del jugador
         let player = new Player();
@@ -72,12 +73,12 @@ const addPlayerGame = async (req, res) => {
         player.totaWins = playerdb.totalWins;
         player.winRatio = playerdb.winRatio;
 
-/* este player que igualo en la linea siguiente de abajo con await updateWinRatio(player) y await updateScore(player);es el player que return en la 
+        /* este player que igualo en la linea siguiente de abajo con await updateWinRatio(player) y await updateScore(player);es el player que return en la 
 funcion updateWinRatio y updateScore de ./services/game_logic.js */
 
-           player = await updateScore(player, game);
+        player = await updateScore(player, game);
         player = await updateWinRatio(player);
-    
+
         // guardar a la base de dades la tirada que ha realitzat, actualizant les dades dels totals i winRatio i demes
         // de fet he actualitzat l'objecte player sencer
         await PlayerDB.updatePlayerData(player);
@@ -137,10 +138,32 @@ const deletePlayerGames = async (req, res) => {
       res.status(400).json({ message: "Bad request" });
     } else {
       // si hi ha id...
-      let player = await PlayerDB.getPlayerData(req.params.id);
-      // si hi ha jugador
-      if (player) {
-        await PlayerDB.deletePlayerGamesData(player);
+      let playerdb = await PlayerDB.getPlayerData(req.params.id);
+
+      if (playerdb) {
+        //esborra tirades del jugador
+        await PlayerDB.deletePlayerGamesData(playerdb);
+
+        // Creamos modelo player e igualamos el modelo playerdb con player.
+        let player = new Player();
+        player.id = playerdb.idPlayer;
+        player.name = playerdb.name;
+        player.register_date = playerdb.register_date;
+        player.totalGames = playerdb.totalGames;
+        player.totaWins = playerdb.totalWins;
+        player.winRatio = playerdb.winRatio;
+
+        /* este player que igualo en la linea siguiente de abajo con await updateWinRatio(player) y await updateScore(player);
+es el player que return en la funcion updateWinRatio y updateScore de ./services/game_logic.js */
+        player.totalGames = 0;
+        player.totalWins = 0;
+        player.winRatio = 0;
+
+        player = await updateScore(player, game);
+        player = await updateWinRatio(player);
+
+        // guardar a la base de dades, actualizant les dades dels totals i winRatio i demes de fet he actualitzat l'objecte player sencer
+
         res.status(200).json({
           message: `Player ${player.name} rolls deleted successfully !! Congratulations!!!`, // tirades eliminades
         });
@@ -159,6 +182,9 @@ const deletePlayerGames = async (req, res) => {
 const ranking = async (req, res) => {
   try {
     let players = await PlayerDB.getAllPlayersRanking();
+
+    players = await averageWinRatio(players);
+
     res.status(200).json({ message: { players } });
     // winRatio(players);
   } catch (error) {
@@ -174,11 +200,9 @@ const modifyNamePlayerController = async (req, res) => {
     const player = new Player(namePlayer);
     player.id = idPlayer;
     await PlayerDB.modifyNamePlayerData(player);
-    res
-      .status(200)
-      .json({
-        message: `Player ${player.name} modified successfully!! Congratulations!!!`,
-      });
+    res.status(200).json({
+      message: `Player ${player.name} modified successfully!! Congratulations!!!`,
+    });
   } catch (error) {
     res.status(404).json({ message: "Player not found" });
   }

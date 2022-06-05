@@ -1,6 +1,7 @@
-const { winRatio } = require("../services/game_logic");
+
 const { Player, Games }  = require ("./connectMySQL");
 const { Op } = require("sequelize");
+
 
 
 async function  addNewPlayerData(player) {  // bbdd: constructor
@@ -23,9 +24,8 @@ async function addGameData(game) {
     
     }
 
-
-
 async function getAllGamesData(player) {
+
         //PlayerIdPlayer es la columna de base de datos de la tabla games dnd se almacenan las id de los player (ForeignKey)
         return await Games.findAll({where: {PlayerIdPlayer: player.id}});
     
@@ -48,7 +48,7 @@ async function modifyNamePlayerData(player) {
 
 }
 async function updatePlayerData(player) {
-    
+
 // de fet he actualitzat l'objecte player sencer
 
     return await Player.update({name: player.name, register_date: player.register_date, totalGames: player.totalGames, totalWins: player.totalWins, winRatio: player.winRatio }, {where: {idPlayer: player.id}});
@@ -67,16 +67,7 @@ async function  getWinnerPlayersRanking () {
 }
 
 
-/*
-async function ranking() {
-    return await Player.findAll();
-    
-} 
 
-async function updateScore() {
-    return await Games.update({score: Games.score});
-}
-*/
 
 
 module.exports = { 

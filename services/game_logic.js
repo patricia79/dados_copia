@@ -37,4 +37,20 @@ async function updateWinRatio(player) {
   return player;
 }
 
-module.exports = { dice_game, updateScore, updateWinRatio };
+// vaig a crear una funció per a fer la mitja del winRatio de tots els players 
+
+async function averageWinRatio(players) {
+let winRatioTotal = 0;
+for (let index = 0; index <= players.length; index++) {
+
+   winRatioTotal = players[index].winRatio + winRatioTotal
+  
+  averageWinRatio = winRatioTotal / players.length;
+
+  return averageWinRatio;
+
+  }
+}
+
+
+module.exports = { dice_game, updateScore, updateWinRatio, averageWinRatio };

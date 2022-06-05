@@ -20,12 +20,12 @@ GET /players: retorna el llistat de tots els jugadors del sistema amb el seu per
 
 PUT /players/{id}: modifica el nom del jugador ok
 
-POST /games/{id}: un jugador específic realitza una tirada
+POST /games/{id}: un jugador específic realitza una tirada ok
 DELETE /games/{id}: elimina les tirades del jugador
 GET /games/{id}: retorna el llistat de jugades per un jugador. ok
 GET /ranking: retorna un ranking de jugadors ordenat per percentatge d'èxits i el percentatge d’èxits mig del conjunt de tots els jugadors 
-GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit 
-GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit 
+GET /ranking/loser: retorna el jugador amb pitjor percentatge d’èxit ok
+GET /ranking/winner: retorna el jugador amb millor percentatge d’èxit ok
 
 Nivell 1
 Persistència: utilitza com a base de dades Mysql (amb Sequelize com a ORM).
@@ -35,4 +35,3 @@ Persistència: utilitza MongoDB (amb Mongoose) com a base de dades.
 
 Nivell 3
 Afegix un endpoint /login que permeti accedir a un administrador amb usuari i contrasenya i retorni un token i fes obligatòria l'autentificació per JWT en tots els accessos a les URL del microservei, utilitzant middlewares per validar al token.
-
