@@ -1,6 +1,7 @@
 
 const { Player, Games }  = require ("./connectMySQL");
-const { Op } = require("sequelize");
+const { Op, json } = require("sequelize");
+const { raw } = require("body-parser");
 
 
 

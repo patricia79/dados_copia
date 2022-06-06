@@ -1,6 +1,6 @@
 "use strict";
 
-const Player = require("../models/Player");
+const Player = require("../models/player");
 const PlayerDB = require("../data/crud");
 let {
   dice_game,
@@ -9,6 +9,7 @@ let {
   averageWinRatio,
   updateScore2,
 } = require("../services/game_logic");
+const { json } = require("body-parser");
 
 //TODO POST /players: crea un jugador// addNewPlayer
 
@@ -186,12 +187,9 @@ const deletePlayerGames = async (req, res) => {
 const ranking = async (req, res) => {
   try {
     let players = await PlayerDB.getAllPlayersRanking();
-
-    players = await averageWinRatio(players);
-
-    res.status(200).json({ message: { players } });
-    // winRatio(players);
-  } catch (error) {
+   let players2 = await averageWinRatio(players);
+    res.status(200).json({ message: {players2}});
+      } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
